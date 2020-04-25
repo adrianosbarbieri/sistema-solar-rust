@@ -1,3 +1,6 @@
+extern crate gl;
+
+use gl::types::*;
 use glm::*;
 use std::vec::Vec;
 use tobj::*;
@@ -9,8 +12,9 @@ pub struct Vertex {
 }
 
 pub struct Mesh {
-    vao: u64,
-    vao_buffer: [u64; 3],
+    draw_count: usize,
+    vao: u32,
+    vao_buffer: [u32; 3],
 }
 
 pub struct IndexedModel {
@@ -18,6 +22,47 @@ pub struct IndexedModel {
     normals: Vec<f32>,
     textures: Vec<f32>,
     indices: Vec<u32>,
+}
+
+pub unsafe fn init_mesh(mesh: &mut Mesh, model: &mut IndexedModel) {
+    mesh.draw_count = model.indices.len();
+    gl::GenVertexArrays(1, &mut mesh.vao);
+    gl::BindVertexArray(mesh.vao);
+
+    gl::GenBuffers(3, mesh.vao_buffer.as_mut_ptr());
+    gl::BindBuffer(gl::ARRAY_BUFFER, mesh.vao_buffer[0]);
+    gl::BufferData(
+        gl::ARRAY_BUFFER,
+        model.positions.len() as isize * std::mem::size_of::<u32>() as isize,
+        model.positions.as_mut_ptr() as *mut std::ffi::c_void,
+        gl::STATIC_DRAW,
+    );
+    gl::EnableVertexAttribArray(0);
+    gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, 0, 0 as *mut std::ffi::c_void);
+
+    gl::GenBuffers(3, mesh.vao_buffer.as_mut_ptr());
+    gl::BindBuffer(gl::ARRAY_BUFFER, mesh.vao_buffer[1]);
+    gl::BufferData(
+        gl::ARRAY_BUFFER,
+        model.textures.len() as isize * std::mem::size_of::<u32>() as isize,
+        model.textures.as_mut_ptr() as *mut std::ffi::c_void,
+        gl::STATIC_DRAW,
+    );
+    gl::EnableVertexAttribArray(0);
+    gl::VertexAttribPointer(1, 2, gl::FLOAT, gl::FALSE, 0, 0 as *mut std::ffi::c_void);
+
+    gl::GenBuffers(3, mesh.vao_buffer.as_mut_ptr());
+    gl::BindBuffer(gl::ARRAY_BUFFER, mesh.vao_buffer[2]);
+    gl::BufferData(
+        gl::ARRAY_BUFFER,
+        model.normals.len() as isize * std::mem::size_of::<u32>() as isize,
+        model.normals.as_mut_ptr() as *mut std::ffi::c_void,
+        gl::STATIC_DRAW,
+    );
+    gl::EnableVertexAttribArray(0);
+    gl::VertexAttribPointer(2, 3, gl::FLOAT, gl::FALSE, 0, 0 as *mut std::ffi::c_void);
+
+    gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, mesh.vao_buffer[3]
 }
 
 pub fn create_mesh_from_file(file: &str) -> IndexedModel {
