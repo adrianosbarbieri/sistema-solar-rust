@@ -1,0 +1,92 @@
+use glm::*;
+use std::vec::Vec;
+use tobj::*;
+
+pub struct Vertex {
+    nor: Vec3,
+    pos: Vec3,
+    tex: Vec2,
+}
+
+pub struct Mesh {
+    vao: u64,
+    vao_buffer: [u64; 3],
+}
+
+pub struct IndexedModel {
+    positions: Vec<f32>,
+    normals: Vec<f32>,
+    textures: Vec<f32>,
+    indices: Vec<u32>,
+}
+
+pub fn create_mesh_from_file(file: &str) -> IndexedModel {
+    let mut model = IndexedModel {
+        positions: Vec::with_capacity(1),
+        normals: Vec::with_capacity(1),
+        textures: Vec::with_capacity(1),
+        indices: Vec::with_capacity(1),
+    };
+
+    let path = std::path::Path::new(file);
+
+    std::println!("{}", path.display());
+
+    let loaded_obj = tobj::load_obj(path);
+
+    assert!(loaded_obj.is_ok());
+
+    std::println!("{}", file);
+
+    let (models, _) = loaded_obj.unwrap();
+
+    for (i, m) in models.iter().enumerate() {
+        let loaded_mesh = &m.mesh;
+
+        for f in 0..loaded_mesh.positions.len() {
+            model.positions.push(loaded_mesh.positions[f]);
+        }
+
+        for f in 0..loaded_mesh.normals.len() {
+            model.normals.push(loaded_mesh.normals[f]);
+        }
+        for f in 0..loaded_mesh.texcoords.len() {
+            model.textures.push(loaded_mesh.texcoords[f]);
+        }
+
+        for f in 0..loaded_mesh.indices.len() {
+            model.indices.push(loaded_mesh.indices[f]);
+        }
+    }
+    model
+}
+
+pub fn create_mesh(
+    vertices: &[Vertex],
+    vertices_len: usize,
+    indices: &[u32],
+    indices_len: usize,
+) -> IndexedModel {
+    let mut model = IndexedModel {
+        positions: Vec::with_capacity(vertices_len),
+        normals: Vec::with_capacity(vertices_len),
+        textures: Vec::with_capacity(vertices_len),
+        indices: Vec::with_capacity(indices_len),
+    };
+
+    for i in 0..vertices_len {
+        model.positions.push(vertices[i].pos.x);
+        model.positions.push(vertices[i].pos.y);
+        model.positions.push(vertices[i].pos.z);
+        model.textures.push(vertices[i].tex.x);
+        model.textures.push(vertices[i].tex.y);
+        model.normals.push(vertices[i].nor.x);
+        model.normals.push(vertices[i].nor.y);
+        model.normals.push(vertices[i].nor.z);
+    }
+
+    for i in 0..indices_len {
+        model.indices.push(indices[i]);
+    }
+    model
+}
