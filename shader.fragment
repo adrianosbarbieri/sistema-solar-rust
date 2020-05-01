@@ -1,0 +1,21 @@
+#version 120
+
+varying vec3 position0;
+varying vec3 normal0;
+varying vec2 texture0;
+uniform sampler2D sampler;
+
+void main(void)
+{
+	vec4 ambientLight = vec4(0.2, 0.2, 0.2, 1);
+	vec3 LightPosition = vec3(0, 0, 0);
+	vec3 LightDirection = vec3(1, 1, 1);
+	vec4 LightColor = vec4(1, 1, 1, 1);
+	vec3 lightToSurface = LightPosition - position0;
+	float d = length(lightToSurface);
+	vec3 normalizedLightDirection = lightToSurface / d;
+	float ndotl = clamp(dot(normalizedLightDirection, normalize(normal0)), 0, 1);
+	vec4 lightValue = LightColor * ndotl ;
+	lightValue = clamp(lightValue + ambientLight, 0, 1);
+	gl_FragColor = texture2D(sampler, texture0) * lightValue;
+}

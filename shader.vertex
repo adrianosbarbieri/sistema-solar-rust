@@ -1,0 +1,23 @@
+#version 120
+attribute vec3 position;
+attribute vec2 texture;
+attribute vec3 normal;
+
+varying vec3 position0;
+varying vec2 texture0;
+varying vec3 normal0;
+
+uniform mat4 transform;
+//uniform mat4 Normal;
+uniform mat4 camera;
+
+void main()
+{
+    vec4 worldpos = transform * vec4(position, 1.0);
+    vec4 viewpos = camera * worldpos;
+    gl_Position = viewpos;
+
+    position0 = vec3(worldpos);
+    texture0 = texture;
+    normal0 = mat3(transform) * normal;
+}

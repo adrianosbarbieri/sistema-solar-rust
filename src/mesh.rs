@@ -56,7 +56,7 @@ pub fn init_mesh(model: &mut IndexedModel) -> Mesh {
         gl::GenVertexArrays(1, &mut mesh.vao);
         gl::BindVertexArray(mesh.vao);
 
-        gl::GenBuffers(3, mesh.vao_buffer.as_mut_ptr());
+        gl::GenBuffers(4, mesh.vao_buffer.as_mut_ptr());
         gl::BindBuffer(gl::ARRAY_BUFFER, mesh.vao_buffer[0]);
         gl::BufferData(
             gl::ARRAY_BUFFER,
