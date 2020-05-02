@@ -16,7 +16,7 @@ fn main() {
     let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
     let (mut window, events) = window::create_window(&mut glfw, 1600, 900, "Asd");
     let mut obj = mesh::create_mesh_from_file("untitled.obj");
-    let mut mesh = mesh::init_mesh(&mut obj);
+    let mesh = mesh::init_mesh(&mut obj);
     let shader1 = shader::Shader::new("shader");
     let shader2 = shader::Shader::new("shader2");
     let jupiter = texture::Texture::new("jupiter.jpg");
@@ -129,7 +129,7 @@ fn main() {
             shader1.bind();
             shader1.update(&transform, &camera);
             space.bind();
-            mesh::draw(&mut mesh);
+            mesh.draw();
             gl::Enable(gl::DEPTH_TEST);
             gl::Enable(gl::CULL_FACE);
             gl::Enable(gl::BACK);
@@ -141,7 +141,7 @@ fn main() {
             shader2.bind();
             shader2.update(&transform, &camera);
             sun.bind();
-            mesh::draw(&mut mesh);
+            mesh.draw();
 
             window.swap_buffers();
         }
@@ -151,5 +151,5 @@ fn main() {
     space.destroy();
     shader2.destroy();
     shader1.destroy();
-    mesh::delete_mesh(&mesh);
+    mesh.destroy();
 }

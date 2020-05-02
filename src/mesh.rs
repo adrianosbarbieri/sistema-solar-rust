@@ -23,24 +23,26 @@ pub struct IndexedModel {
     pub indices: Vec<u32>,
 }
 
-pub fn draw(mesh: &mut Mesh) {
-    unsafe {
-        gl::BindVertexArray(mesh.vao);
-        gl::DrawElementsBaseVertex(
-            gl::TRIANGLES,
-            mesh.draw_count,
-            gl::UNSIGNED_INT,
-            std::ptr::null(),
-            0,
-        );
-        gl::BindVertexArray(0);
+impl Mesh {
+    pub fn draw(&self) {
+        unsafe {
+            gl::BindVertexArray(self.vao);
+            gl::DrawElementsBaseVertex(
+                gl::TRIANGLES,
+                self.draw_count,
+                gl::UNSIGNED_INT,
+                std::ptr::null(),
+                0,
+            );
+            gl::BindVertexArray(0);
+        }
     }
-}
 
-pub fn delete_mesh(mesh: &Mesh) {
-    unsafe {
-        gl::DeleteBuffers(4, &mesh.vao);
-        gl::DeleteVertexArrays(1, &mesh.vao);
+    pub fn destroy(self) {
+        unsafe {
+            gl::DeleteBuffers(4, &self.vao);
+            gl::DeleteVertexArrays(1, &self.vao);
+        }
     }
 }
 

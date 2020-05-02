@@ -79,7 +79,7 @@ impl Shader {
             gl::UseProgram(self.shader_program);
         }
     }
-    pub fn destroy(&self) {
+    pub fn destroy(self) {
         unsafe {
             for i in 0..2 {
                 gl::DetachShader(self.shader_program, self.shaders[i]);

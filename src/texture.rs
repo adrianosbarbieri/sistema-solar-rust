@@ -52,7 +52,7 @@ impl Texture {
             gl::BindTexture(gl::TEXTURE_2D, self.texture);
         }
     }
-    pub fn destroy(&self) {
+    pub fn destroy(self) {
         unsafe {
             gl::DeleteTextures(1, &self.texture);
         }
