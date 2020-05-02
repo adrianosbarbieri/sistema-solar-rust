@@ -19,9 +19,6 @@ pub unsafe fn init_texture(img: DynamicImage) -> u32 {
     gl::TexParameterf(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as f32);
     gl::TexParameterf(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as f32);
     let vec1 = real_img.into_raw();
-    println!("vec len: {}", vec1.len());
-    println!("img w: {}", width);
-    println!("img h: {}", height);
     gl::TexImage2D(
         gl::TEXTURE_2D,
         0,

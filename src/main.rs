@@ -85,7 +85,6 @@ fn main() {
             last_counter = counter;
             counter = glfw.get_time();
             let diff = counter - last_counter;
-            println!("{}", 1.0 / diff);
             gl::ClearColor(0.0, 0.0, 0.0, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 

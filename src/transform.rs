@@ -5,8 +5,6 @@ use cgmath::Matrix4;
 use cgmath::Rad;
 use cgmath::Vector3;
 
-use super::camera::Camera;
-
 pub struct Transform {
     pub pos: Vector3<f32>,
     pub rot: Vector3<f32>,
@@ -23,10 +21,5 @@ impl Transform {
         let rot_z = Matrix4::<f32>::from_angle_x(Rad(self.rot.z));
         let rot_mat = rot_x * rot_y * rot_z;
         pos_mat * rot_mat * scale_mat
-    }
-    pub fn get_mvp(&self, cam: &Camera) -> Matrix4<f32> {
-        let vp = cam.get_view_projection();
-        let m = self.get_model();
-        vp * m
     }
 }

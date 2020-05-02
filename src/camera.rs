@@ -1,8 +1,10 @@
 extern crate cgmath;
 
+use cgmath::perspective;
 use cgmath::vec3;
 use cgmath::Matrix4;
 use cgmath::Point3;
+use cgmath::Rad;
 use cgmath::Vector3;
 
 pub struct Camera {
@@ -15,7 +17,7 @@ pub struct Camera {
 impl Camera {
     pub fn new(pos: Point3<f32>, fov: f32, aspect: f32, z_near: f32, z_far: f32) -> Camera {
         let camera = Camera {
-            perspective: cgmath::perspective(cgmath::Rad(fov.to_radians()), aspect, z_near, z_far),
+            perspective: perspective(Rad(fov.to_radians()), aspect, z_near, z_far),
             position: pos,
             forward: vec3(0.0, 0.0, 1.0),
             up: vec3(0.0, 1.0, 0.0),

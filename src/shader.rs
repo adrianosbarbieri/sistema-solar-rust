@@ -89,8 +89,8 @@ impl Shader {
         }
     }
     pub fn new(shader_file: &str) -> Shader {
-        let mut vertex_shader_name = shader_file.to_owned() + ".vertex";
-        let mut fragment_shader_name = shader_file.to_owned() + ".fragment";
+        let vertex_shader_name = shader_file.to_owned() + ".vertex";
+        let fragment_shader_name = shader_file.to_owned() + ".fragment";
         unsafe {
             let mut vertex_text = load_shader(vertex_shader_name.as_str());
             let mut frag_text = load_shader(fragment_shader_name.as_str());

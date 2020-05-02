@@ -1,10 +1,8 @@
 extern crate gl;
 
 use cgmath::*;
-use gl::types::*;
 use std::ffi::c_void;
 use std::vec::Vec;
-use tobj::*;
 
 pub struct Vertex {
     pub nor: Vector3<f32>,
@@ -108,18 +106,13 @@ pub fn create_mesh_from_file(file: &str) -> IndexedModel {
     };
 
     let path = std::path::Path::new(file);
-
-    std::println!("{}", path.display());
-
     let loaded_obj = tobj::load_obj(path);
 
     assert!(loaded_obj.is_ok());
 
-    std::println!("{}", file);
-
     let (models, _) = loaded_obj.unwrap();
 
-    for (i, m) in models.iter().enumerate() {
+    for (_, m) in models.iter().enumerate() {
         let loaded_mesh = &m.mesh;
 
         for f in 0..loaded_mesh.positions.len() {
