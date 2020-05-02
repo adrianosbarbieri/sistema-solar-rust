@@ -20,7 +20,9 @@ fn main() {
     let shader1 = shader::Shader::new("shader");
     let shader2 = shader::Shader::new("shader2");
     let jupiter = texture::Texture::new("jupiter.jpg");
+    let earth = texture::Texture::new("earth.jpg");
     let sun = texture::Texture::new("sun.jpg");
+    let moon = texture::Texture::new("moon.jpg");
     let space = texture::Texture::new("space.jpg");
     let mut camera = camera::Camera::new(
         cgmath::Point3::<f32> {
@@ -51,9 +53,9 @@ fn main() {
         let mut yoffset = last_y - ypos;
         last_x = xpos;
         last_y = ypos;
-        let sensitivity = 0.0005;
-        xoffset += sensitivity;
-        yoffset += sensitivity;
+        let sensitivity = 0.05;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
         yaw += xoffset;
         pitch += yoffset;
         if pitch > 89.0 {
@@ -93,16 +95,13 @@ fn main() {
             if window.get_key(Key::W) != Action::Release {
                 camera.position = camera.position + (200.0 * diff as f32 * camera.forward);
             }
-
             if window.get_key(Key::S) != Action::Release {
                 camera.position = camera.position - (200.0 * diff as f32 * camera.forward);
             }
-
             if window.get_key(Key::A) != Action::Release {
                 camera.position =
                     camera.position - 200.0 * diff as f32 * (camera.forward.cross(camera.up));
             }
-
             if window.get_key(Key::D) != Action::Release {
                 camera.position =
                     camera.position + 200.0 * diff as f32 * (camera.forward.cross(camera.up));
@@ -125,7 +124,7 @@ fn main() {
             transform.pos = cgmath::vec3(50.0, 0.0, 0.0);
             transform.scale = cgmath::vec3(500.0, 500.0, 500.0);
             transform.scale_val = 500.0;
-            transform.rot = cgmath::vec3(90.0, 0.0, 0.0);
+            transform.rot = cgmath::vec3(0.0, 0.0, 0.0);
             shader1.bind();
             shader1.update(&transform, &camera);
             space.bind();
@@ -134,10 +133,58 @@ fn main() {
             gl::Enable(gl::CULL_FACE);
             gl::Enable(gl::BACK);
 
+            transform.pos.x = (0.0 + 150.0 * (1.0 * counter).sin()) as f32;
+            transform.pos.y = (0.0 + 40.0 * (1.0 * counter).sin()) as f32;
+            transform.pos.z = (0.0 + 150.0 * (1.0 * counter).cos()) as f32;
+            transform.scale = cgmath::vec3(10.0, 10.0, 10.0);
+            transform.scale_val = 10.0;
+            let mut e_z: f64 = transform.pos.z as f64;
+            let mut e_y: f64 = transform.pos.y as f64;
+            let mut e_x: f64 = transform.pos.x as f64;
+            transform.rot = cgmath::vec3(0.0, 0.0, 0.0);
+            transform.rot.y = 5.0 * counter as f32;
+            shader1.bind();
+            shader1.update(&transform, &camera);
+            earth.bind();
+            mesh.draw();
+
+            transform.pos.x = (e_x + 25.0 * (4.0 * counter).sin()) as f32;
+            transform.pos.y = (e_y + 40.0 * (4.0 * counter).sin()) as f32;
+            transform.pos.z = (e_z + 25.0 * (4.0 * counter).cos()) as f32;
+            transform.scale_val = 5.0;
+            e_z = transform.pos.z as f64;
+            e_y = transform.pos.y as f64;
+            e_x = transform.pos.x as f64;
+            transform.rot = cgmath::vec3(0.0, 5.0 * counter as f32, 0.0);
+            shader1.bind();
+            shader1.update(&transform, &camera);
+            moon.bind();
+            mesh.draw();
+
+            transform.pos.x = (e_x + 15.0 * (10.0 * counter).sin()) as f32;
+            transform.pos.y = (e_y + 40.0 * (10.0 * counter).sin()) as f32;
+            transform.pos.z = (e_z + 15.0 * (10.0 * counter).cos()) as f32;
+            transform.scale_val = 2.0;
+            transform.rot = cgmath::vec3(0.0, 4.0 * counter as f32, 0.0);
+            shader1.bind();
+            shader1.update(&transform, &camera);
+            moon.bind();
+            mesh.draw();
+
+            transform.pos.x = (0.0 + 200.0 * (4.0 * counter).sin()) as f32;
+            transform.pos.y = (0.0 + 10.0 * (1.0 * counter).sin()) as f32;
+            transform.pos.z = (0.0 + 200.0 * (4.0 * counter).cos()) as f32;
+            transform.scale_val = 3.0;
+            transform.rot = cgmath::vec3(0.0, 3.0 * counter as f32, 0.0);
+            shader1.bind();
+            shader1.update(&transform, &camera);
+            moon.bind();
+            mesh.draw();
+
             transform.pos = cgmath::vec3(0.0, 0.0, 0.0);
             transform.scale = cgmath::vec3(1.0, 1.0, 1.0);
-            transform.scale_val = 10.0;
-            transform.rot = transform.rot + cgmath::vec3(1.0, 1.0, 0.0);
+            transform.scale_val = 50.0;
+            transform.rot = cgmath::vec3(1.0, 1.0, 0.0);
             shader2.bind();
             shader2.update(&transform, &camera);
             sun.bind();
