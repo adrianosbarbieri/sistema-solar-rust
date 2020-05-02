@@ -1,25 +1,30 @@
-extern crate glm;
+extern crate cgmath;
 extern crate num;
+
+use cgmath::Matrix4;
+use cgmath::Rad;
+use cgmath::Vector3;
 
 use super::camera::Camera;
 
 pub struct Transform {
-    pos: glm::Vec3,
-    rot: glm::Vec3,
-    scale: glm::Vec3,
+    pub pos: Vector3<f32>,
+    pub rot: Vector3<f32>,
+    pub scale: Vector3<f32>,
+    pub scale_val: f32,
 }
 
 impl Transform {
-    pub fn get_model(&self) -> glm::Mat4 {
-        let pos_mat = glm::ext::translate(&num::one(), self.pos);
-        let scale_mat = glm::ext::scale(&num::one(), self.scale);
-        let rot_x = glm::ext::rotate(&num::one(), self.rot.x, glm::vec3(1.0, 0.0, 0.0));
-        let rot_y = glm::ext::rotate(&num::one(), self.rot.y, glm::vec3(0.0, 1.0, 0.0));
-        let rot_z = glm::ext::rotate(&num::one(), self.rot.z, glm::vec3(0.0, 0.0, 1.0));
+    pub fn get_model(&self) -> Matrix4<f32> {
+        let pos_mat = Matrix4::<f32>::from_translation(self.pos);
+        let scale_mat = Matrix4::<f32>::from_scale(self.scale_val);
+        let rot_x = Matrix4::<f32>::from_angle_x(Rad(self.rot.x));
+        let rot_y = Matrix4::<f32>::from_angle_x(Rad(self.rot.y));
+        let rot_z = Matrix4::<f32>::from_angle_x(Rad(self.rot.z));
         let rot_mat = rot_x * rot_y * rot_z;
         pos_mat * rot_mat * scale_mat
     }
-    pub fn get_mvp(&self, cam: &Camera) -> glm::Mat4 {
+    pub fn get_mvp(&self, cam: &Camera) -> Matrix4<f32> {
         let vp = cam.get_view_projection();
         let m = self.get_model();
         vp * m

@@ -21,9 +21,9 @@ pub fn create_window(
     glfw::Window,
     std::sync::mpsc::Receiver<(f64, glfw::WindowEvent)>,
 ) {
-    glfw_ctx.window_hint(WindowHint::ContextVersion(3, 3));
+    glfw_ctx.window_hint(WindowHint::ContextVersion(3, 1));
     glfw_ctx.window_hint(WindowHint::Resizable(false));
-    glfw_ctx.window_hint(WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));
+    // glfw_ctx.window_hint(WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Any));
     let (mut window, events) = glfw_ctx
         .create_window(width, height, title, glfw::WindowMode::Windowed)
         .expect("Failed to create the window");
@@ -35,7 +35,7 @@ pub fn create_window(
     unsafe {
         gl::Enable(gl::DEPTH_TEST);
         gl::Enable(gl::CULL_FACE);
-        gl::Enable(gl::BACK);
+        gl::CullFace(gl::BACK);
     }
     (window, events)
 }

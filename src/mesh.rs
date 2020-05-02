@@ -1,27 +1,28 @@
 extern crate gl;
 
+use cgmath::*;
 use gl::types::*;
-use glm::*;
+use std::ffi::c_void;
 use std::vec::Vec;
 use tobj::*;
 
 pub struct Vertex {
-    nor: Vec3,
-    pos: Vec3,
-    tex: Vec2,
+    pub nor: Vector3<f32>,
+    pub pos: Vector3<f32>,
+    pub tex: Vector2<f32>,
 }
 
 pub struct Mesh {
-    draw_count: i32,
-    vao: u32,
-    vao_buffer: [u32; 4],
+    pub draw_count: i32,
+    pub vao: u32,
+    pub vao_buffer: [u32; 4],
 }
 
 pub struct IndexedModel {
-    positions: Vec<f32>,
-    normals: Vec<f32>,
-    textures: Vec<f32>,
-    indices: Vec<u32>,
+    pub positions: Vec<f32>,
+    pub normals: Vec<f32>,
+    pub textures: Vec<f32>,
+    pub indices: Vec<u32>,
 }
 
 pub fn draw(mesh: &mut Mesh) {
@@ -31,7 +32,7 @@ pub fn draw(mesh: &mut Mesh) {
             gl::TRIANGLES,
             mesh.draw_count,
             gl::UNSIGNED_INT,
-            0 as *mut std::ffi::c_void,
+            std::ptr::null(),
             0,
         );
         gl::BindVertexArray(0);
@@ -61,42 +62,38 @@ pub fn init_mesh(model: &mut IndexedModel) -> Mesh {
         gl::BufferData(
             gl::ARRAY_BUFFER,
             model.positions.len() as isize * std::mem::size_of::<u32>() as isize,
-            model.positions.as_mut_ptr() as *mut std::ffi::c_void,
+            &model.positions[0] as *const f32 as *const c_void,
             gl::STATIC_DRAW,
         );
         gl::EnableVertexAttribArray(0);
-        gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, 0, 0 as *mut std::ffi::c_void);
-
+        gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, 0, std::ptr::null());
         gl::GenBuffers(3, mesh.vao_buffer.as_mut_ptr());
         gl::BindBuffer(gl::ARRAY_BUFFER, mesh.vao_buffer[1]);
         gl::BufferData(
             gl::ARRAY_BUFFER,
             model.textures.len() as isize * std::mem::size_of::<u32>() as isize,
-            model.textures.as_mut_ptr() as *mut std::ffi::c_void,
+            &model.textures[0] as *const f32 as *const c_void,
             gl::STATIC_DRAW,
         );
-        gl::EnableVertexAttribArray(0);
-        gl::VertexAttribPointer(1, 2, gl::FLOAT, gl::FALSE, 0, 0 as *mut std::ffi::c_void);
-
+        gl::EnableVertexAttribArray(1);
+        gl::VertexAttribPointer(1, 2, gl::FLOAT, gl::FALSE, 0, std::ptr::null());
         gl::GenBuffers(3, mesh.vao_buffer.as_mut_ptr());
         gl::BindBuffer(gl::ARRAY_BUFFER, mesh.vao_buffer[2]);
         gl::BufferData(
             gl::ARRAY_BUFFER,
             model.normals.len() as isize * std::mem::size_of::<u32>() as isize,
-            model.normals.as_mut_ptr() as *mut std::ffi::c_void,
+            &model.normals[0] as *const f32 as *const c_void,
             gl::STATIC_DRAW,
         );
-        gl::EnableVertexAttribArray(0);
+        gl::EnableVertexAttribArray(2);
         gl::VertexAttribPointer(2, 3, gl::FLOAT, gl::FALSE, 0, 0 as *mut std::ffi::c_void);
-
         gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, mesh.vao_buffer[3]);
         gl::BufferData(
             gl::ELEMENT_ARRAY_BUFFER,
             model.indices.len() as isize * std::mem::size_of::<u32>() as isize,
-            model.indices.as_mut_ptr() as *mut std::ffi::c_void,
+            &model.indices[0] as *const u32 as *const c_void,
             gl::STATIC_DRAW,
         );
-
         gl::BindVertexArray(0);
     }
     mesh
